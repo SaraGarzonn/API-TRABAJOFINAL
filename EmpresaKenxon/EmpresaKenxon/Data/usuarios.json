@@ -1,0 +1,32 @@
+[
+  {
+    "NombreUsuario": "jefe",
+    "ContrasenaHash": "0B85E824D924145106A5EE3004BEF792C502C428729514225F64A3A818C017AB",
+    "Rol": "Jefe",
+    "Id": 1,
+    "Cedula": "1000000001",
+    "Nombre": "Jefe Kenxon",
+    "Celular": "3000000001",
+    "Direccion": "Rionegro, Antioquia"
+  },
+  {
+    "NombreUsuario": "secretaria",
+    "ContrasenaHash": "872B9275C66776AA46341B1F3DCFF6FB3D39744C2E8669662E3FA8C5247F60B5",
+    "Rol": "Secretaria",
+    "Id": 2,
+    "Cedula": "1000000002",
+    "Nombre": "Secretaria Kenxon",
+    "Celular": "3000000002",
+    "Direccion": "Rionegro, Antioquia"
+  },
+  {
+    "NombreUsuario": "empleado",
+    "ContrasenaHash": "54C5D237240C6979D4777BA26CE0C599673922BA77D338E89C116292C3127F2F",
+    "Rol": "Empleado",
+    "Id": 3,
+    "Cedula": "1000000003",
+    "Nombre": "Empleado Kenxon",
+    "Celular": "3000000003",
+    "Direccion": "Rionegro, Antioquia"
+  }
+]

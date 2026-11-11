@@ -1,0 +1,10 @@
+[
+  {
+    "Id": 1,
+    "Fecha": "2026-11-04T20:07:15.7138895-05:00",
+    "ClienteId": 1,
+    "Descripcion": "radio",
+    "Total": 10000000,
+    "EstadoPago": "Parcial"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "Id": 1,
+    "Fecha": "2026-11-04T20:07:15.7150622-05:00",
+    "Monto": 8000000,
+    "CompraId": 1,
+    "UsuarioId": 1,
+    "SaldoPosterior": 2000000
+  }
+]

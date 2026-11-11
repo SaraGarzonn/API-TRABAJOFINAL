@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kenxon Car Sound</title>
+
+    <!-- =====================================================
+         ESTILOS (CSS): colores, tamaños y espacios
+         ===================================================== -->
+    <style>
+        /* ===== COLORES DEL DISEÑO (cámbielos aquí y se cambian en toda la página) ===== */
+        :root {
+            --morado: #5b2a86;
+            --morado-oscuro: #3f1d5e;
+            --morado-claro: #f1e9f9;
+            --morado-borde: #d8c8e8;
+            --fondo: #f6f3fa;
+            --texto: #2a2135;
+            --texto-suave: #6b6178;
+            --blanco: #ffffff;
+        }
+
+        /* ===== PÁGINA ===== */
+        body {
+            margin: 0;
+            font-family: "Segoe UI", "Trebuchet MS", Tahoma, sans-serif;
+            background: var(--fondo);
+            color: var(--texto);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .contenedor {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 20px 16px 40px 16px;
+        }
+
+        /* ===== ENCABEZADO ===== */
+        .encabezado {
+            background: linear-gradient(135deg, var(--morado-oscuro), #7b48b0);
+            color: var(--blanco);
+            padding: 28px 16px;
+            text-align: center;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 4px 14px rgba(63, 29, 94, 0.35);
+        }
+
+        .encabezado h1 {
+            margin: 0;
+            font-size: 30px;
+            letter-spacing: 1px;
+        }
+
+        .encabezado p {
+            margin: 6px 0 0 0;
+            font-size: 15px;
+            opacity: 0.85;
+        }
+
+        /* ===== TARJETAS (cada recuadro blanco) ===== */
+        .tarjeta {
+            background: var(--blanco);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border-top: 5px solid var(--morado);
+            box-shadow: 0 2px 10px rgba(63, 29, 94, 0.10);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--morado-oscuro);
+            font-size: 22px;
+        }
+
+        h3 {
+            color: var(--morado);
+            margin-bottom: 8px;
+        }
+
+        /* ===== FORMULARIOS ===== */
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            color: var(--morado-oscuro);
+        }
+
+        input, select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            font-size: 16px;
+            font-family: inherit;
+            border: 2px solid var(--morado-borde);
+            border-radius: 10px;
+            background: #fcfaff;
+            color: var(--texto);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--morado);
+            box-shadow: 0 0 0 4px rgba(91, 42, 134, 0.15);
+        }
+
+        /* ===== BOTONES ===== */
+        button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 16px;
+            font-size: 16px;
+            font-family: inherit;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            background: var(--morado);
+            color: var(--blanco);
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(91, 42, 134, 0.25);
+        }
+
+        button:hover {
+            background: var(--morado-oscuro);
+        }
+
+        button.secundario {
+            background: var(--blanco);
+            color: var(--morado);
+            border: 2px solid var(--morado);
+            box-shadow: none;
+        }
+
+        button.secundario:hover {
+            background: var(--morado-claro);
+        }
+
+        button.peligro {
+            background: #c0392b;
+        }
+
+        button.peligro:hover {
+            background: #962d22;
+        }
+
+        button.pequeno {
+            display: inline-block;
+            width: auto;
+            padding: 7px 12px;
+            margin: 3px 4px 3px 0;
+            font-size: 14px;
+            border-radius: 8px;
+        }
+
+        /* ===== MENÚ: botones en cuadrícula ===== */
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 10px;
+        }
+
+        .menu button {
+            margin-top: 0;
+        }
+
+        #textoUsuario {
+            grid-column: 1 / -1;
+            background: var(--morado-claro);
+            color: var(--morado-oscuro);
+            padding: 10px 14px;
+            border-radius: 10px;
+        }
+
+        /* ===== MENSAJES: verde = éxito, rojo = error ===== */
+        .mensaje {
+            display: none;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .mensaje.exito {
+            background: #e3f6e8;
+            color: #1e6b34;
+            border-left: 6px solid #22a04b;
+        }
+
+        .mensaje.error {
+            background: #fde8e8;
+            color: #9b1c1c;
+            border-left: 6px solid #dc2626;
+        }
+
+        /* Oculta secciones y opciones (lo usa el JavaScript, no lo borre) */
+        .oculto {
+            display: none !important;
+        }
+
+        /* ===== TABLAS ===== */
+        .tabla-desplazable {
+            overflow-x: auto;
+            margin-top: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--morado-borde);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid #ece4f4;
+        }
+
+        th {
+            background: var(--morado);
+            color: var(--blanco);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) td {
+            background: #faf7fd;
+        }
+
+        #tablaClientes table {
+            margin-top: 14px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* ===== DATOS, TOTALES Y COMPROBANTE ===== */
+        .dato {
+            margin: 6px 0;
+        }
+
+        .total {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--morado-oscuro);
+            background: var(--morado-claro);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .comprobante {
+            border: 2px dashed var(--morado);
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 16px;
+            background: #fcfaff;
+        }
+
+        /* Al imprimir, solo se ve el comprobante */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #areaComprobante, #areaComprobante * {
+                visibility: visible;
+            }
+            #areaComprobante {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-imprimir {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="encabezado">
+        <h1>Kenxon Car Sound</h1>
+        <p>Clientes, compras y abonos</p>
+    </div>
+
+    <div class="contenedor">
+
+        <!-- Cuadro de mensajes: verde = éxito, rojo = error -->
+        <div id="mensaje" class="mensaje"></div>
+
+        <!-- =====================================================
+             PANTALLA DE LOGIN
+             ===================================================== -->
+        <div id="pantallaLogin" class="tarjeta">
+            <h2>Iniciar sesión</h2>
+            <form onsubmit="iniciarSesion(); return false;">
+                <label for="loginUsuario">Usuario</label>
+                <input id="loginUsuario" type="text" placeholder="jefe, secretaria o empleado" />
+
+                <label for="loginContrasena">Contraseña</label>
+                <input id="loginContrasena" type="password" />
+
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+
+        <!-- =====================================================
+             APLICACIÓN (se ve después del login)
+             ===================================================== -->
+        <div id="aplicacion" class="oculto">
+
+            <!-- MENÚ -->
+            <div class="tarjeta menu">
+                <div id="textoUsuario"></div>
+                <button onclick="mostrarSeccion('clientes')">Clientes</button>
+                <button class="solo-registro" onclick="mostrarSeccion('compras')">Registrar compra</button>
+                <button onclick="mostrarSeccion('abonos')">Abonos y comprobantes</button>
+                <button onclick="mostrarSeccion('estado')">Estado de cuenta</button>
+                <button onclick="mostrarSeccion('cartera')">Cartera pendiente</button>
+                <button class="peligro" onclick="cerrarSesion()">Cerrar sesión</button>
+            </div>
+
+            <!-- ===== SECCIÓN CLIENTES ===== -->
+            <div id="seccion-clientes" class="seccion">
+
+                <div class="tarjeta solo-registro">
+                    <h2>Registrar cliente</h2>
+                    <form onsubmit="registrarCliente(); return false;">
+                        <label for="clienteCedula">Cédula</label>
+                        <input id="clienteCedula" type="text" />
+                        <label for="clienteNombre">Nombre</label>
+                        <input id="clienteNombre" type="text" />
+                        <label for="clienteCelular">Celular</label>
+                        <input id="clienteCelular" type="text" />
+                        <label for="clienteDireccion">Dirección</label>
+                        <input id="clienteDireccion" type="text" />
+                        <button type="submit">Registrar cliente</button>
+                    </form>
+                </div>
+
+                <div id="tarjetaEdicion" class="tarjeta oculto">
+                    <h2>Editar cliente</h2>
+                    <p class="dato"><strong>Cédula:</strong> <span id="edicionCedula"></span> (no se puede cambiar)</p>
+                    <form onsubmit="guardarEdicion(); return false;">
+                        <input id="edicionId" type="hidden" />
+                        <label for="edicionNombre">Nombre</label>
+                        <input id="edicionNombre" type="text" />
+                        <label for="edicionCelular">Celular</label>
+                        <input id="edicionCelular" type="text" />
+                        <label for="edicionDireccion">Dirección</label>
+                        <input id="edicionDireccion" type="text" />
+                        <button type="submit">Guardar cambios</button>
+                        <button type="button" class="secundario" onclick="cancelarEdicion()">Cancelar</button>
+                    </form>
+                </div>
+
+                <div class="tarjeta">
+                    <h2>Lista de clientes</h2>
+                    <form onsubmit="buscarPorCedula(); return false;">
+                        <label for="buscarCedula">Buscar por cédula</label>
+                        <input id="buscarCedula" type="text" />
+                        <button type="submit">Buscar</button>
+                    </form>
+                    <button class="secundario" onclick="listarClientes()">Ver todos los clientes</button>
+                    <div class="tabla-desplazable" id="tablaClientes"></div>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN COMPRAS ===== -->
+            <div id="seccion-compras" class="seccion oculto">
+                <div class="tarjeta">
+                    <h2>Registrar compra</h2>
+                    <p>El abono inicial debe ser de mínimo $8.000.000 y no mayor al total.</p>
+                    <form onsubmit="registrarCompra(); return false;">
+                        <label for="compraCliente">Cliente</label>
+                        <select id="compraCliente"></select>
+                        <label for="compraDescripcion">Descripción</label>
+                        <input id="compraDescripcion" type="text" />
+                        <label for="compraTotal">Total (sin puntos, ej: 20000000)</label>
+                        <input id="compraTotal" type="number" min="0" />
+                        <label for="compraAbonoInicial">Abono inicial (sin puntos, ej: 8000000)</label>
+                        <input id="compraAbonoInicial" type="number" min="0" />
+                        <button type="submit">Registrar compra</button>
+                    </form>
+                    <div id="resultadoCompra"></div>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN ABONOS ===== -->
+            <div id="seccion-abonos" class="seccion oculto">
+                <div class="tarjeta solo-registro">
+                    <h2>Registrar abono</h2>
+                    <form onsubmit="registrarAbono(); return false;">
+                        <label for="abonoCompraId">Número de compra</label>
+                        <input id="abonoCompraId" type="number" min="1" />
+                        <label for="abonoMonto">Monto (sin puntos, ej: 2000000)</label>
+                        <input id="abonoMonto" type="number" />
+                        <button type="submit">Registrar abono</button>
+                    </form>
+                    <div id="resultadoAbono"></div>
+                </div>
+
+                <div class="tarjeta">
+                    <h2>Comprobante de abono</h2>
+                    <form onsubmit="consultarComprobante(); return false;">
+                        <label for="comprobanteId">Número de abono</label>
+                        <input id="comprobanteId" type="number" min="1" />
+                        <button type="submit">Ver comprobante</button>
+                    </form>
+                    <div id="areaComprobante"></div>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN ESTADO DE CUENTA ===== -->
+            <div id="seccion-estado" class="seccion oculto">
+                <div class="tarjeta">
+                    <h2>Estado de cuenta</h2>
+                    <form onsubmit="consultarEstadoCuenta(); return false;">
+                        <label for="estadoCliente">Cliente</label>
+                        <select id="estadoCliente"></select>
+                        <button type="submit">Consultar</button>
+                    </form>
+                    <div id="resultadoEstado"></div>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN CARTERA ===== -->
+            <div id="seccion-cartera" class="seccion oculto">
+                <div class="tarjeta">
+                    <h2>Cartera pendiente</h2>
+                    <button onclick="consultarCartera()">Actualizar cartera</button>
+                    <div id="resultadoCartera"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- =====================================================
+         JAVASCRIPT: lo que hace cada botón
+         ===================================================== -->
+    <script>
+
+        // =====================================================
+        // FUNCIONES COMUNES
+        // =====================================================
+
+        // Lista de clientes cargada por última vez (se usa para buscar y editar)
+        var clientesCargados = [];
+
+        function obtenerToken() {
+            return sessionStorage.getItem("token");
+        }
+
+        // Solo Jefe y Secretaria pueden registrar y editar
+        function puedeRegistrar() {
+            var rol = sessionStorage.getItem("rol");
+            return rol === "Jefe" || rol === "Secretaria";
+        }
+
+        // 8000000 -> "$8.000.000"
+        function formatoPesos(valor) {
+            return "$" + Number(valor).toLocaleString("es-CO");
+        }
+
+        function formatoFecha(fecha) {
+            return new Date(fecha).toLocaleString("es-CO");
+        }
+
+        // Evita que un texto escrito por el usuario se interprete como HTML
+        function escapar(texto) {
+            var elemento = document.createElement("div");
+            elemento.textContent = texto === null || texto === undefined ? "" : String(texto);
+            return elemento.innerHTML;
+        }
+
+        // tipo: "exito" (verde) o "error" (rojo)
+        function mostrarMensaje(texto, tipo) {
+            var caja = document.getElementById("mensaje");
+            caja.textContent = texto;
+            caja.className = "mensaje " + tipo;
+            caja.style.display = "block";
+            window.scrollTo(0, 0);
+        }
+
+        function ocultarMensaje() {
+            document.getElementById("mensaje").style.display = "none";
+        }
+
+        // Función única que usa fetch para hablar con la API.
+        // Envía el token en el encabezado Authorization y devuelve { estado, ok, datos }.
+        function llamarApi(metodo, ruta, datos) {
+            var opciones = {
+                method: metodo,
+                headers: { "Content-Type": "application/json" }
+            };
+
+            var token = obtenerToken();
+            if (token) {
+                opciones.headers["Authorization"] = "Bearer " + token;
+            }
+
+            if (datos) {
+                opciones.body = JSON.stringify(datos);
+            }
+
+            return fetch(ruta, opciones)
+                .then(function (respuesta) {
+                    // Algunas respuestas (401, 403) llegan vacías, por eso leemos el texto primero
+                    return respuesta.text().then(function (texto) {
+                        var cuerpo = null;
+                        if (texto) {
+                            cuerpo = JSON.parse(texto);
+                        }
+                        return { estado: respuesta.status, ok: respuesta.ok, datos: cuerpo };
+                    });
+                })
+                .catch(function () {
+                    // La API no respondió (por ejemplo, el proyecto no se está ejecutando)
+                    return { estado: 0, ok: false, datos: { mensaje: "No se pudo conectar con la API. Revise que el proyecto se esté ejecutando." } };
+                });
+        }
+
+        // Convierte una respuesta fallida en un texto para el cuadro rojo
+        function textoDeError(resultado) {
+            if (resultado.estado === 403) {
+                return "No tiene permiso para esta acción (403). Su rol solo puede consultar.";
+            }
+            if (resultado.datos && resultado.datos.mensaje) {
+                return resultado.datos.mensaje + " (código " + resultado.estado + ")";
+            }
+            if (resultado.datos && resultado.datos.title) {
+                return "Datos inválidos: revise que los campos numéricos estén bien escritos (código " + resultado.estado + ")";
+            }
+            return "Ocurrió un error (código " + resultado.estado + ").";
+        }
+
+        // Revisa la respuesta: si es 401 vuelve al login; si es otro error lo muestra en rojo.
+        // Devuelve true solo si todo salió bien.
+        function respuestaCorrecta(resultado) {
+            if (resultado.estado === 401) {
+                cerrarSesion();
+                mostrarMensaje("Su sesión venció o no es válida (401). Inicie sesión de nuevo.", "error");
+                return false;
+            }
+            if (!resultado.ok) {
+                mostrarMensaje(textoDeError(resultado), "error");
+                return false;
+            }
+            return true;
+        }
+
+        // Muestra una sección y oculta las demás
+        function cambiarSeccion(nombre) {
+            var secciones = document.getElementsByClassName("seccion");
+            for (var i = 0; i < secciones.length; i++) {
+                secciones[i].classList.add("oculto");
+            }
+            document.getElementById("seccion-" + nombre).classList.remove("oculto");
+            ocultarMensaje();
+        }
+
+        // Cambia de sección y carga los datos que esa sección necesita
+        function mostrarSeccion(nombre) {
+            cambiarSeccion(nombre);
+
+            if (nombre === "clientes") {
+                listarClientes();
+            }
+            if (nombre === "compras") {
+                cargarClientesEnSelect("compraCliente", null);
+            }
+            if (nombre === "estado") {
+                cargarClientesEnSelect("estadoCliente", null);
+            }
+            if (nombre === "cartera") {
+                consultarCartera();
+            }
+        }
+
+        // Oculta lo que el Empleado no puede usar.
+        // OJO: esto es solo comodidad. La seguridad real la hace la API respondiendo 403.
+        function aplicarPermisos() {
+            var elementos = document.getElementsByClassName("solo-registro");
+            for (var i = 0; i < elementos.length; i++) {
+                if (puedeRegistrar()) {
+                    elementos[i].classList.remove("oculto");
+                } else {
+                    elementos[i].classList.add("oculto");
+                }
+            }
+        }
+
+        // Llena una lista desplegable con los clientes
+        function cargarClientesEnSelect(idSelect, idSeleccionado) {
+            // GET /api/clientes -> 200 con la lista de clientes [{ id, cedula, nombre, celular, direccion }]
+            llamarApi("GET", "/api/clientes").then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                var html = '<option value="">-- Elija un cliente --</option>';
+                resultado.datos.forEach(function (cliente) {
+                    html += '<option value="' + cliente.id + '">' + escapar(cliente.nombre + " - cédula " + cliente.cedula) + '</option>';
+                });
+                var select = document.getElementById(idSelect);
+                select.innerHTML = html;
+                if (idSeleccionado) {
+                    select.value = idSeleccionado;
+                }
+            });
+        }
+
+        // =====================================================
+        // LOGIN
+        // =====================================================
+
+        function iniciarSesion() {
+            var datos = {
+                nombreUsuario: document.getElementById("loginUsuario").value,
+                contrasena: document.getElementById("loginContrasena").value
+            };
+
+            // POST /api/auth/login -> 200 { token, nombreUsuario, rol } o 401 { mensaje }
+            llamarApi("POST", "/api/auth/login", datos).then(function (resultado) {
+                if (!resultado.ok) {
+                    mostrarMensaje(textoDeError(resultado), "error");
+                    return;
+                }
+
+                // sessionStorage: "bolsillo" del navegador que se vacía al cerrar la pestaña
+                sessionStorage.setItem("token", resultado.datos.token);
+                sessionStorage.setItem("rol", resultado.datos.rol);
+                sessionStorage.setItem("nombreUsuario", resultado.datos.nombreUsuario);
+
+                mostrarAplicacion();
+                mostrarMensaje("Bienvenido(a), " + resultado.datos.nombreUsuario + ". Su rol es " + resultado.datos.rol + ".", "exito");
+            });
+        }
+
+        function mostrarAplicacion() {
+            document.getElementById("pantallaLogin").classList.add("oculto");
+            document.getElementById("aplicacion").classList.remove("oculto");
+            document.getElementById("textoUsuario").innerHTML =
+                "Usuario: <strong>" + escapar(sessionStorage.getItem("nombreUsuario")) + "</strong> · Rol: <strong>" +
+                escapar(sessionStorage.getItem("rol")) + "</strong>";
+            aplicarPermisos();
+            mostrarSeccion("clientes");
+        }
+
+        function cerrarSesion() {
+            sessionStorage.clear();
+            document.getElementById("aplicacion").classList.add("oculto");
+            document.getElementById("pantallaLogin").classList.remove("oculto");
+            document.getElementById("loginContrasena").value = "";
+            ocultarMensaje();
+        }
+
+        // =====================================================
+        // CLIENTES
+        // =====================================================
+
+        function registrarCliente() {
+            var datos = {
+                cedula: document.getElementById("clienteCedula").value,
+                nombre: document.getElementById("clienteNombre").value,
+                celular: document.getElementById("clienteCelular").value,
+                direccion: document.getElementById("clienteDireccion").value
+            };
+
+            // POST /api/clientes -> 201 con el cliente creado, o 400 { mensaje } (ej. cédula repetida)
+            llamarApi("POST", "/api/clientes", datos).then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                mostrarMensaje("Cliente registrado: " + resultado.datos.nombre + " (Id " + resultado.datos.id + ").", "exito");
+                document.getElementById("clienteCedula").value = "";
+                document.getElementById("clienteNombre").value = "";
+                document.getElementById("clienteCelular").value = "";
+                document.getElementById("clienteDireccion").value = "";
+                listarClientes();
+            });
+        }
+
+        function listarClientes() {
+            // GET /api/clientes -> 200 con la lista de clientes
+            llamarApi("GET", "/api/clientes").then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                clientesCargados = resultado.datos;
+                dibujarTablaClientes(clientesCargados);
+            });
+        }
+
+        // La API no tiene ruta para buscar por cédula: traemos la lista y buscamos aquí.
+        function buscarPorCedula() {
+            var cedula = document.getElementById("buscarCedula").value.trim();
+
+            // GET /api/clientes -> 200 con la lista de clientes
+            llamarApi("GET", "/api/clientes").then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                clientesCargados = resultado.datos;
+                var encontrados = clientesCargados.filter(function (cliente) {
+                    return cliente.cedula === cedula;
+                });
+                if (encontrados.length === 0) {
+                    mostrarMensaje("No existe un cliente con la cédula " + cedula + ".", "error");
+                } else {
+                    ocultarMensaje();
+                }
+                dibujarTablaClientes(encontrados);
+            });
+        }
+
+        function dibujarTablaClientes(lista) {
+            if (lista.length === 0) {
+                document.getElementById("tablaClientes").innerHTML = "<p>No hay clientes para mostrar.</p>";
+                return;
+            }
+
+            var html = "<table><tr><th>Id</th><th>Cédula</th><th>Nombre</th><th>Celular</th><th>Dirección</th><th>Acciones</th></tr>";
+            lista.forEach(function (cliente) {
+                html += "<tr>" +
+                    "<td>" + cliente.id + "</td>" +
+                    "<td>" + escapar(cliente.cedula) + "</td>" +
+                    "<td>" + escapar(cliente.nombre) + "</td>" +
+                    "<td>" + escapar(cliente.celular) + "</td>" +
+                    "<td>" + escapar(cliente.direccion) + "</td>" +
+                    "<td>";
+                if (puedeRegistrar()) {
+                    html += '<button class="pequeno" onclick="mostrarEdicion(' + cliente.id + ')">Editar</button>';
+                }
+                html += '<button class="pequeno secundario" onclick="irAEstadoCuenta(' + cliente.id + ')">Estado de cuenta</button>';
+                html += "</td></tr>";
+            });
+            html += "</table>";
+            document.getElementById("tablaClientes").innerHTML = html;
+        }
+
+        function mostrarEdicion(id) {
+            var cliente = clientesCargados.find(function (candidato) {
+                return candidato.id === id;
+            });
+            document.getElementById("edicionId").value = cliente.id;
+            document.getElementById("edicionCedula").textContent = cliente.cedula;
+            document.getElementById("edicionNombre").value = cliente.nombre;
+            document.getElementById("edicionCelular").value = cliente.celular;
+            document.getElementById("edicionDireccion").value = cliente.direccion;
+            document.getElementById("tarjetaEdicion").classList.remove("oculto");
+            ocultarMensaje();
+            window.scrollTo(0, 0);
+        }
+
+        function cancelarEdicion() {
+            document.getElementById("tarjetaEdicion").classList.add("oculto");
+        }
+
+        function guardarEdicion() {
+            var id = document.getElementById("edicionId").value;
+            var datos = {
+                nombre: document.getElementById("edicionNombre").value,
+                celular: document.getElementById("edicionCelular").value,
+                direccion: document.getElementById("edicionDireccion").value
+            };
+
+            // PUT /api/clientes/{id} -> 200 con el cliente editado, 400 { mensaje } o 404 { mensaje }
+            llamarApi("PUT", "/api/clientes/" + id, datos).then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                mostrarMensaje("Cliente actualizado: " + resultado.datos.nombre + ".", "exito");
+                cancelarEdicion();
+                listarClientes();
+            });
+        }
+
+        // =====================================================
+        // COMPRAS
+        // =====================================================
+
+        function registrarCompra() {
+            var clienteElegido = document.getElementById("compraCliente").value;
+            if (clienteElegido === "") {
+                mostrarMensaje("Elija un cliente de la lista.", "error");
+                return;
+            }
+
+            var datos = {
+                clienteId: Number(clienteElegido),
+                descripcion: document.getElementById("compraDescripcion").value,
+                total: Number(document.getElementById("compraTotal").value),
+                abonoInicial: Number(document.getElementById("compraAbonoInicial").value)
+            };
+
+            // POST /api/compras -> 201 { mensaje, compraId, total, saldo, estado, abonoInicialId },
+            // 400 { mensaje } si el abono inicial no cumple, o 404 si el cliente no existe
+            llamarApi("POST", "/api/compras", datos).then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                var compra = resultado.datos;
+                mostrarMensaje(compra.mensaje, "exito");
+                document.getElementById("resultadoCompra").innerHTML =
+                    "<h3>Compra número " + compra.compraId + "</h3>" +
+                    '<p class="dato"><strong>Descripción:</strong> ' + escapar(compra.descripcion) + "</p>" +
+                    '<p class="dato"><strong>Total:</strong> ' + formatoPesos(compra.total) + "</p>" +
+                    '<p class="dato"><strong>Saldo pendiente:</strong> ' + formatoPesos(compra.saldo) + "</p>" +
+                    '<p class="dato"><strong>Estado:</strong> ' + compra.estado + "</p>" +
+                    '<p class="dato"><strong>Número del abono inicial:</strong> ' + compra.abonoInicialId + "</p>" +
+                    '<button onclick="verComprobante(' + compra.abonoInicialId + ')">Ver comprobante del abono inicial</button>';
+                document.getElementById("compraDescripcion").value = "";
+                document.getElementById("compraTotal").value = "";
+                document.getElementById("compraAbonoInicial").value = "";
+            });
+        }
+
+        // =====================================================
+        // ABONOS
+        // =====================================================
+
+        function registrarAbono() {
+            var datos = {
+                compraId: Number(document.getElementById("abonoCompraId").value),
+                monto: Number(document.getElementById("abonoMonto").value)
+            };
+
+            // POST /api/abonos -> 201 { mensaje, abonoId, compraId, monto, saldoPosterior, estado },
+            // 400 { mensaje } (monto inválido, mayor al saldo o compra pagada) o 404 si la compra no existe
+            llamarApi("POST", "/api/abonos", datos).then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                var abono = resultado.datos;
+                mostrarMensaje(abono.mensaje, "exito");
+                document.getElementById("resultadoAbono").innerHTML =
+                    "<h3>Abono número " + abono.abonoId + "</h3>" +
+                    '<p class="dato"><strong>Compra:</strong> ' + abono.compraId + "</p>" +
+                    '<p class="dato"><strong>Monto:</strong> ' + formatoPesos(abono.monto) + "</p>" +
+                    '<p class="dato"><strong>Saldo posterior:</strong> ' + formatoPesos(abono.saldoPosterior) + "</p>" +
+                    '<p class="dato"><strong>Estado de la compra:</strong> ' + abono.estado + "</p>" +
+                    '<button onclick="verComprobante(' + abono.abonoId + ')">Ver comprobante</button>';
+                document.getElementById("abonoMonto").value = "";
+            });
+        }
+
+        function consultarComprobante() {
+            var id = document.getElementById("comprobanteId").value;
+            if (id === "") {
+                mostrarMensaje("Escriba el número de abono.", "error");
+                return;
+            }
+            pedirComprobante(id);
+        }
+
+        // Se usa desde los botones "Ver comprobante" de compras y abonos
+        function verComprobante(id) {
+            cambiarSeccion("abonos");
+            document.getElementById("comprobanteId").value = id;
+            pedirComprobante(id);
+        }
+
+        function pedirComprobante(id) {
+            // GET /api/abonos/{id}/comprobante -> 200 { numeroAbono, fecha, cliente, compra, monto,
+            // saldoPosterior, registradoPor } o 404 { mensaje }
+            llamarApi("GET", "/api/abonos/" + id + "/comprobante").then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    document.getElementById("areaComprobante").innerHTML = "";
+                    return;
+                }
+                var comprobante = resultado.datos;
+                document.getElementById("areaComprobante").innerHTML =
+                    '<div class="comprobante">' +
+                    "<h3>Kenxon Car Sound – Comprobante de abono</h3>" +
+                    '<p class="dato"><strong>Número de abono:</strong> ' + comprobante.numeroAbono + "</p>" +
+                    '<p class="dato"><strong>Fecha:</strong> ' + formatoFecha(comprobante.fecha) + "</p>" +
+                    '<p class="dato"><strong>Cliente:</strong> ' + escapar(comprobante.cliente) + "</p>" +
+                    '<p class="dato"><strong>Compra:</strong> número ' + comprobante.compra.compraId + " – " + escapar(comprobante.compra.descripcion) +
+                    " (total " + formatoPesos(comprobante.compra.total) + ")</p>" +
+                    '<p class="dato"><strong>Monto abonado:</strong> ' + formatoPesos(comprobante.monto) + "</p>" +
+                    '<p class="dato"><strong>Saldo posterior:</strong> ' + formatoPesos(comprobante.saldoPosterior) + "</p>" +
+                    '<p class="dato"><strong>Registrado por:</strong> ' + escapar(comprobante.registradoPor) + "</p>" +
+                    "</div>" +
+                    '<button class="no-imprimir" onclick="window.print()">Imprimir comprobante</button>';
+            });
+        }
+
+        // =====================================================
+        // ESTADO DE CUENTA
+        // =====================================================
+
+        function consultarEstadoCuenta() {
+            var id = document.getElementById("estadoCliente").value;
+            if (id === "") {
+                mostrarMensaje("Elija un cliente de la lista.", "error");
+                return;
+            }
+            pedirEstadoCuenta(id);
+        }
+
+        // Se usa desde el botón "Estado de cuenta" de la lista de clientes
+        function irAEstadoCuenta(id) {
+            cambiarSeccion("estado");
+            cargarClientesEnSelect("estadoCliente", id);
+            pedirEstadoCuenta(id);
+        }
+
+        function pedirEstadoCuenta(id) {
+            // GET /api/clientes/{id}/estado-cuenta -> 200 { cliente, compras, abonos, saldoTotal } o 404 { mensaje }
+            llamarApi("GET", "/api/clientes/" + id + "/estado-cuenta").then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                var estado = resultado.datos;
+                var html =
+                    "<h3>" + escapar(estado.cliente.nombre) + "</h3>" +
+                    '<p class="dato"><strong>Cédula:</strong> ' + escapar(estado.cliente.cedula) + "</p>" +
+                    '<p class="dato"><strong>Celular:</strong> ' + escapar(estado.cliente.celular) + "</p>" +
+                    '<p class="dato"><strong>Dirección:</strong> ' + escapar(estado.cliente.direccion) + "</p>";
+
+                html += "<h3>Compras</h3>";
+                if (estado.compras.length === 0) {
+                    html += "<p>Este cliente no tiene compras.</p>";
+                } else {
+                    html += '<div class="tabla-desplazable"><table><tr><th>N.º</th><th>Descripción</th><th>Total</th><th>Abonado</th><th>Saldo</th><th>Estado</th></tr>';
+                    estado.compras.forEach(function (compra) {
+                        html += "<tr><td>" + compra.compraId + "</td><td>" + escapar(compra.descripcion) + "</td><td>" +
+                            formatoPesos(compra.total) + "</td><td>" + formatoPesos(compra.abonado) + "</td><td>" +
+                            formatoPesos(compra.saldo) + "</td><td>" + compra.estado + "</td></tr>";
+                    });
+                    html += "</table></div>";
+                }
+
+                html += "<h3>Abonos</h3>";
+                if (estado.abonos.length === 0) {
+                    html += "<p>Este cliente no tiene abonos.</p>";
+                } else {
+                    html += '<div class="tabla-desplazable"><table><tr><th>N.º abono</th><th>Fecha</th><th>Compra</th><th>Monto</th><th>Saldo posterior</th></tr>';
+                    estado.abonos.forEach(function (abono) {
+                        html += "<tr><td>" + abono.id + "</td><td>" + formatoFecha(abono.fecha) + "</td><td>" +
+                            abono.compraId + "</td><td>" + formatoPesos(abono.monto) + "</td><td>" +
+                            formatoPesos(abono.saldoPosterior) + "</td></tr>";
+                    });
+                    html += "</table></div>";
+                }
+
+                html += '<p class="total">Saldo total pendiente: ' + formatoPesos(estado.saldoTotal) + "</p>";
+                document.getElementById("resultadoEstado").innerHTML = html;
+            });
+        }
+
+        // =====================================================
+        // CARTERA
+        // =====================================================
+
+        function consultarCartera() {
+            // GET /api/reportes/cartera -> 200 { comprasPendientes, totalPendiente }
+            llamarApi("GET", "/api/reportes/cartera").then(function (resultado) {
+                if (!respuestaCorrecta(resultado)) {
+                    return;
+                }
+                var cartera = resultado.datos;
+                var html = "";
+                if (cartera.comprasPendientes.length === 0) {
+                    html += "<p>No hay compras con saldo pendiente.</p>";
+                } else {
+                    html += '<div class="tabla-desplazable"><table><tr><th>Cliente</th><th>Cédula</th><th>N.º compra</th><th>Descripción</th><th>Total</th><th>Saldo</th></tr>';
+                    cartera.comprasPendientes.forEach(function (fila) {
+                        html += "<tr><td>" + escapar(fila.nombre) + "</td><td>" + escapar(fila.cedula) + "</td><td>" +
+                            fila.compraId + "</td><td>" + escapar(fila.descripcion) + "</td><td>" +
+                            formatoPesos(fila.total) + "</td><td>" + formatoPesos(fila.saldo) + "</td></tr>";
+                    });
+                    html += "</table></div>";
+                }
+                html += '<p class="total">Total pendiente general: ' + formatoPesos(cartera.totalPendiente) + "</p>";
+                document.getElementById("resultadoCartera").innerHTML = html;
+            });
+        }
+
+        // =====================================================
+        // INICIO: si ya hay un token guardado, entra directo
+        // =====================================================
+        if (obtenerToken()) {
+            mostrarAplicacion();
+        }
+
+    </script>
+</body>
+</html>
